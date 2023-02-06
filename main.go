@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	ln, err := net.Listen("tcp", "localhost:8080")
+	ln, err := net.Listen("tcp", "0.0.0.0:8080")
 	if err != nil {
-		log.Fatalf("can't start WSS on localhost:8080")
+		log.Fatalf("can't start WSS on 0.0.0.0:8080")
 	}
 	ConnectionPool := registry.GetConnectionRegistry()
 	EventBus := backplane.NewSampleBus(ConnectionPool)
