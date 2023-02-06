@@ -29,7 +29,7 @@ func (s SampleTransport) GetMessage() *protocol.Message {
 }
 
 func (s SampleTransport) SendMessage(message *protocol.Message) error {
-	log.Printf("Sending message `%s` to event bus", message)
+	log.Printf("Sending message `%+v` to event bus", message)
 	return nil
 }
 
