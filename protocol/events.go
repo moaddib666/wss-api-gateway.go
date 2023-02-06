@@ -7,14 +7,14 @@ import (
 )
 
 type Event struct {
-	Metadata struct {
-		EntityId      string `json:"entity_id"`
-		EntityName    string `json:"entity_name"`
-		PublisherName string `json:"publisher_name"`
-		EventName     string `json:"event_name"`
-		Created       string `json:"created"`
-	} `json:"metadata"`
-	Payload struct{} `json:"payload"`
+	Meta struct {
+		ObjectId   string `json:"object_id"`
+		ObjectType string `json:"object_type"`
+		Publisher  string `json:"publisher"`
+		Event      string `json:"event"`
+		Created    string `json:"created"`
+	} `json:"meta"`
+	Data struct{} `json:"data"`
 }
 
 func (e Event) Dump() []byte {
@@ -23,12 +23,12 @@ func (e Event) Dump() []byte {
 }
 
 func NewClientEvent(clientId string, eventName string) *Event {
-	metadata := struct {
-		EntityId      string `json:"entity_id"`
-		EntityName    string `json:"entity_name"`
-		PublisherName string `json:"publisher_name"`
-		EventName     string `json:"event_name"`
-		Created       string `json:"created"`
+	meta := struct {
+		ObjectId   string `json:"object_id"`
+		ObjectType string `json:"object_type"`
+		Publisher  string `json:"publisher"`
+		Event      string `json:"event"`
+		Created    string `json:"created"`
 	}{
 		clientId,
 		"client",
@@ -36,8 +36,8 @@ func NewClientEvent(clientId string, eventName string) *Event {
 		eventName,
 		time.Now().Format(time.RFC3339),
 	}
-	payload := struct{}{}
-	return &Event{Metadata: metadata, Payload: payload}
+	data := struct{}{}
+	return &Event{Meta: meta, Data: data}
 }
 
 func ClientConnectedEvent(clientId string) *Event {

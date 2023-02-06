@@ -62,20 +62,20 @@ On Client Connected
     - `recipient`: `*`
     - `sender`:	`ApiGateway`
   - Payload
-     ```json 
-     {
-        "metadata":{
-           "entity_id":"TestClient",
-           "entity_name":"client",
-           "publisher_name":"ApiGateway",
-           "event_name":"connected",
-           "created":"2023-02-06T20:31:06+02:00"
-        },
-        "payload":{
-         
-        }
+  ```json
+  {
+     "meta":{
+        "object_id":"TestClient",
+        "object_type":"client",
+        "publisher":"ApiGateway",
+        "event":"connected",
+        "created":"2023-02-06T20:51:49+02:00"
+     },
+     "data":{
+        
      }
-     ```
+  }
+  ```
 
 On Client Disconnected
 - Exchange:	`ApiGatewayOutbox`
@@ -85,21 +85,20 @@ On Client Disconnected
     - `recipient`: `*`
     - `sender`:	`ApiGateway`
   - Payload
-     ```json 
-     {
-        "metadata":{
-           "entity_id":"TestClient",
-           "entity_name":"client",
-           "publisher_name":"ApiGateway",
-           "event_name":"disconnected",
-           "created":"2023-02-06T20:31:06+02:00"
-        },
-        "payload":{
-         
-        }
+  ```json
+  {
+     "meta":{
+        "object_id":"TestClient",
+        "object_type":"client",
+        "publisher":"ApiGateway",
+        "event":"disconnected",
+        "created":"2023-02-06T20:51:49+02:00"
+     },
+     "data":{
+        
      }
-     ```
-
+  }
+  ```
 ### Inbox
 
 In RMQ transport represented as `direct` exchange by default name is `ApiGatewayInbox`

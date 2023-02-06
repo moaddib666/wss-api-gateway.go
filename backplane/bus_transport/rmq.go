@@ -5,6 +5,7 @@ import (
 	"context"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
+	"os"
 	"time"
 )
 
@@ -20,8 +21,7 @@ type RMQTransport struct {
 }
 
 func (s *RMQTransport) Init() (err error) {
-	// FIXME DSN from env
-	s.conn, err = amqp.Dial(connectionDSN)
+	s.conn, err = amqp.Dial(s.getDSN())
 	if err != nil {
 		return err
 	}
@@ -95,6 +95,13 @@ func (s *RMQTransport) createQueues() (err error) {
 	return nil
 }
 
+func (s *RMQTransport) getDSN() string {
+	dsn := os.Getenv("RMQ_DSN")
+	if dsn == "" {
+		dsn = connectionDSN
+	}
+	return dsn
+}
 func (s *RMQTransport) reader() error {
 	ch, err := s.conn.Channel()
 	if err != nil {
