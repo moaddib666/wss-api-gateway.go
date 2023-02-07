@@ -35,12 +35,15 @@ Token Decoded:
   "typ": "JWT"
   }
   ```
-- Payload:
+- Claims: https://www.rfc-editor.org/rfc/rfc7519#section-4.1
  ```json
   {
-  "sub": "1234567890",
-  "user": "John Snow",
-  "iat": 1516239022
+  "aud": "localhost", 
+  "exp": "1.675816912e+09",
+  "iat": "1.675730512e+09",
+  "iss": "IdentityServiceLocal",
+  "jti": "Jhohn Snow",
+  "sub": "client"
   }
   ```
 

@@ -34,7 +34,7 @@ func main() {
 				}
 				client := auth.NewClient(value)
 				if client.IsAuthorised() {
-					connection = registry.CreateRegistryItem(client.Id, conn)
+					connection = registry.CreateRegistryItem(client.Id(), conn)
 					return nil
 				}
 				return ws.RejectConnectionError(

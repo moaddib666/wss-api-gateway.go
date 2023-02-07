@@ -20,7 +20,7 @@ func (c *ConnectionRegistry) Add(connection *Connection) error {
 	c.mu.Lock()
 	c.connections[connection.ConnectionId] = connection
 	c.mu.Unlock()
-	log.Printf("Connection `%s` added to cennection pool", connection.ConnectionId)
+	log.Printf("Connection `%s` added to connection pool", connection.ConnectionId)
 	return nil
 }
 
@@ -31,7 +31,7 @@ func (c *ConnectionRegistry) Del(connection *Connection) error {
 		delete(c.connections, connection.ConnectionId)
 		c.mu.Unlock()
 	}
-	log.Printf("Connection `%s` removed from cennection pool", connection.ConnectionId)
+	log.Printf("Connection `%s` removed from connection pool", connection.ConnectionId)
 	return connection.WebSocket.Close()
 }
 
