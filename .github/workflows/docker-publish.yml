@@ -6,20 +6,17 @@ name: Docker
 # documentation.
 
 on:
-  schedule:
-    - cron: '29 18 * * *'
   push:
     branches: [ "main" ]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ "main" ]
+    tags: [ '*.*.*' ]
+
 
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: margay
+  IMAGE_NAME: moaddib666/margay:latest
 
 
 jobs:
