@@ -1,6 +1,10 @@
-# WSS API Gateway
+# Margay - Websocket API Gateway
 
 This service transform websocket messages to pub/sub communication via RMQ.
+
+Our gateway - `Margay` like a small wild cat, consume minimum resources but provide flexible and scalable solution.
+
+
 ## Architecture
 
 ### Logical view
@@ -12,8 +16,9 @@ This service transform websocket messages to pub/sub communication via RMQ.
 
 ## Local stand
 1) Run RMQ bitnami image used in example: `docker compose up -d`
-2) Run application `go run main.go`
-3) Login to RMQ dashboard via `http://127.0.0.1:15672/`
+2) Setup transport dsn via env `MARGAY_TRANSPORT_DSN`
+3) Run application `go run main.go`
+4) Login to RMQ dashboard via `http://127.0.0.1:15672/`
    - user: `user`
    - password: `bitnami`
 
@@ -54,23 +59,23 @@ Token Decoded:
    But main concept is to perform auth request to the Identity Provider and get cleintId from the token
 
 ### Outbox
-In RMQ transport represented as `topic` exchange by default name is `ApiGatewayOutbox`
+In RMQ transport represented as `topic` exchange by default name is `MargayGatewayOutbox`
 
 #### RMQ Messages
 On Client Connected
-- Exchange:	`ApiGatewayOutbox`
+- Exchange:	`MargayGatewayOutbox`
 - Routing Key: ``
 - Properties
   - headers:
     - `recipient`: `*`
-    - `sender`:	`ApiGateway`
+    - `sender`:	`MargayGateway`
   - Payload
   ```json
   {
      "meta":{
         "object_id":"TestClient",
         "object_type":"client",
-        "publisher":"ApiGateway",
+        "publisher":"MargayGateway",
         "event":"connected",
         "created":"2023-02-06T20:51:49+02:00"
      },
@@ -81,19 +86,19 @@ On Client Connected
   ```
 
 On Client Disconnected
-- Exchange:	`ApiGatewayOutbox`
+- Exchange:	`MargayGatewayOutbox`
 - Routing Key: ``
 - Properties
   - headers:
     - `recipient`: `*`
-    - `sender`:	`ApiGateway`
+    - `sender`:	`MargayGateway`
   - Payload
   ```json
   {
      "meta":{
         "object_id":"TestClient",
         "object_type":"client",
-        "publisher":"ApiGateway",
+        "publisher":"MargayGateway",
         "event":"disconnected",
         "created":"2023-02-06T20:51:49+02:00"
      },
@@ -104,7 +109,7 @@ On Client Disconnected
   ```
 ### Inbox
 
-In RMQ transport represented as `direct` exchange by default name is `ApiGatewayInbox`
+In RMQ transport represented as `direct` exchange by default name is `MargayGatewayInbox`
 Require that message headers to be set like:
 - headers:
   - `recipient`: `ClientId`

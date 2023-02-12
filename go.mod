@@ -1,4 +1,4 @@
-module WSSFacade
+module MargayGateway
 
 go 1.18
 

@@ -1,6 +1,6 @@
 package bus_transport
 
-import "WSSFacade/protocol"
+import "MargayGateway/protocol"
 
 type Transport interface {
 	Init() error

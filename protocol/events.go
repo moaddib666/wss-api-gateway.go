@@ -1,7 +1,7 @@
 package protocol
 
 import (
-	"WSSFacade/constants"
+	"MargayGateway/constants"
 	"encoding/json"
 	"time"
 )

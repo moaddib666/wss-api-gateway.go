@@ -1,10 +1,10 @@
 package backplane
 
 import (
-	"WSSFacade/backplane/bus_transport"
-	"WSSFacade/constants"
-	"WSSFacade/protocol"
-	"WSSFacade/registry"
+	"MargayGateway/backplane/bus_transport"
+	"MargayGateway/constants"
+	"MargayGateway/protocol"
+	"MargayGateway/registry"
 	"log"
 	"time"
 )
@@ -41,6 +41,7 @@ func (s *SampleBus) handleClientConnection(connection *registry.Connection) {
 		constants.AppInternalName,
 		protocol.ClientConnectedEvent(connection.ConnectionId).Dump())
 	if err != nil {
+		log.Printf("Failed to send onConnect message %-v", err)
 		return
 	}
 	defer s.proxyClientMessage(
@@ -50,6 +51,7 @@ func (s *SampleBus) handleClientConnection(connection *registry.Connection) {
 		msg, err := connection.GetMessage()
 		if err != nil {
 			// TODO handle error
+			log.Printf("Failed to get messages %-v", err)
 			return
 		}
 		err = s.proxyClientMessage(connection.ConnectionId, msg)
@@ -73,6 +75,11 @@ func (s *SampleBus) subscribe(transport bus_transport.Transport) {
 		for {
 			time.Sleep(500)
 			msg := s.transport.GetMessage()
+			if msg.Metadata.Recipient == constants.AppInternalName {
+				log.Printf("Reject message due to invalid recipient `%s` is internal client", constants.AppInternalName)
+				s.transport.AckMessage(msg)
+				continue
+			}
 			connection, err := s.clients.Get(msg.Metadata.Recipient)
 			if err != nil {
 				s.transport.AckMessage(nil)

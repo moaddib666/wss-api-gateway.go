@@ -1,7 +1,7 @@
 package bus_transport
 
 import (
-	"WSSFacade/protocol"
+	"MargayGateway/protocol"
 	"context"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
@@ -9,9 +9,9 @@ import (
 	"time"
 )
 
-const inboxQueueName = "ApiGatewayInbox"
-const outboxQueueName = "ApiGatewayOutbox"
-const connectionDSN = "amqp://user:bitnami@localhost:5672/" // TODO ENV VAR
+const inboxQueueName = "MargayGatewayInbox"
+const outboxQueueName = "MargayGatewayOutbox"
+const connectionDSN = "amqp://user:bitnami@localhost:5672/"
 
 type RMQTransport struct {
 	conn    *amqp.Connection
@@ -96,7 +96,7 @@ func (s *RMQTransport) createQueues() (err error) {
 }
 
 func (s *RMQTransport) getDSN() string {
-	dsn := os.Getenv("RMQ_DSN")
+	dsn := os.Getenv("MARGAY_TRANSPORT_DSN")
 	if dsn == "" {
 		dsn = connectionDSN
 	}
@@ -176,7 +176,7 @@ func (s *RMQTransport) SendMessage(message *protocol.Message) error {
 			//ContentType: "text/plain",
 			Body: message.Payload,
 			//UserId:      message.Metadata.Sender,
-			//AppId:       "ApiGateway",
+			//AppId:       "MargayGateway",
 			//Headers:
 			Headers: map[string]interface{}{
 				"recipient": message.Metadata.Recipient,

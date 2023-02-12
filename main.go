@@ -1,15 +1,13 @@
 package main
 
 import (
-	"WSSFacade/auth"
-	"WSSFacade/backplane"
-	"WSSFacade/registry"
+	"MargayGateway/auth"
+	"MargayGateway/backplane"
+	"MargayGateway/registry"
 	"github.com/gobwas/ws"
-	"github.com/gobwas/ws/wsutil"
 	"log"
 	"net"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -21,7 +19,6 @@ func main() {
 	EventBus := backplane.NewSampleBus(ConnectionPool)
 
 	for {
-		//time.Sleep(500)
 		var connection *registry.Connection
 		conn, err := ln.Accept()
 		if err != nil {
@@ -55,25 +52,5 @@ func main() {
 			continue
 		}
 		EventBus.ConnectClient(connection)
-		//go handleConnection(connection)
-	}
-}
-
-func handleConnection(connection *registry.Connection) {
-	conn := connection.WebSocket
-	defer conn.Close()
-
-	for {
-		msg, op, err := wsutil.ReadClientData(conn)
-		if err != nil {
-			// TODO handle error
-			return
-		}
-		err = wsutil.WriteServerMessage(conn, op, msg)
-		if err != nil {
-			// TODO handle error
-			return
-		}
-		time.Sleep(5)
 	}
 }

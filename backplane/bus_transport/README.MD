@@ -5,13 +5,13 @@ Used as backplane for api gateway
 Durable queue witch used as message broker.
 Microservices that want to communicate through WSS need to publish their massages to `inbox` queue
 
-Default name is `ApiGatewayInbox`
+Default name is `MargayGatewayInbox`
 
 ### Outbox Exchange
 Exchange that accepts messages from api gateway.
 Microservices that wants to listen events from WSS need to create separate `service` queue and bind it the `outbox` exchange
 
-Default name is: `ApiGatewayOutbox` 
+Default name is: `MargayGatewayOutbox` 
 
 ### Message Protocol
 

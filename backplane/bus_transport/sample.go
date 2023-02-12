@@ -1,7 +1,7 @@
 package bus_transport
 
 import (
-	"WSSFacade/protocol"
+	"MargayGateway/protocol"
 	"log"
 )
 

@@ -1,8 +1,8 @@
 package backplane
 
 import (
-	"WSSFacade/backplane/bus_transport"
-	"WSSFacade/registry"
+	"MargayGateway/backplane/bus_transport"
+	"MargayGateway/registry"
 )
 
 type EventBus interface {
