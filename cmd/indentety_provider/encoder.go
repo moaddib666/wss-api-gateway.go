@@ -18,9 +18,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	var sampleSecretKey = []byte(os.Getenv("APP_SECRET"))
+	var sampleSecretKey = []byte(os.Getenv("MARGAY_AUTH_SECRET"))
 	if len(sampleSecretKey) == 0 {
-		fmt.Println("Please set secret variable, example: `export APP_SECRET=SuperSecret`")
+		fmt.Println("Please set secret variable, example: `export MARGAY_AUTH_SECRET=SuperSecret`")
 		os.Exit(1)
 	}
 	claims := jwt.StandardClaims{

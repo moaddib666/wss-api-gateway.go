@@ -3,6 +3,8 @@ package main
 import (
 	"MargayGateway/auth"
 	"MargayGateway/backplane"
+	"MargayGateway/constants"
+	"MargayGateway/monitoring"
 	"MargayGateway/registry"
 	"github.com/gobwas/ws"
 	"log"
@@ -10,10 +12,17 @@ import (
 	"strings"
 )
 
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	monitoring.Init()
+}
+
 func main() {
-	ln, err := net.Listen("tcp", "0.0.0.0:8080")
+	ln, err := net.Listen("tcp", "0.0.0.0:"+constants.DefaultPort)
+
+	go monitoring.StartMetricsServer(constants.DefaultMetricsPort)
 	if err != nil {
-		log.Fatalf("can't start WSS on 0.0.0.0:8080")
+		log.Fatalf("can't start Service on 0.0.0.0:%s - %s", constants.DefaultPort, err)
 	}
 	ConnectionPool := registry.GetConnectionRegistry()
 	EventBus := backplane.NewSampleBus(ConnectionPool)

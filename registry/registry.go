@@ -1,6 +1,8 @@
 package registry
 
 import (
+	"MargayGateway/constants"
+	"MargayGateway/monitoring"
 	"fmt"
 	"log"
 	"sync"
@@ -19,6 +21,7 @@ func (c *ConnectionRegistry) Add(connection *Connection) error {
 	}
 	c.mu.Lock()
 	c.connections[connection.ConnectionId] = connection
+	monitoring.IncrementConnectionCount(constants.DefaultRoute)
 	c.mu.Unlock()
 	log.Printf("Connection `%s` added to connection pool", connection.ConnectionId)
 	return nil
@@ -29,6 +32,7 @@ func (c *ConnectionRegistry) Del(connection *Connection) error {
 	if err == nil {
 		c.mu.Lock()
 		delete(c.connections, connection.ConnectionId)
+		monitoring.DecrementConnectionCount(constants.DefaultRoute)
 		c.mu.Unlock()
 	}
 	log.Printf("Connection `%s` removed from connection pool", connection.ConnectionId)
