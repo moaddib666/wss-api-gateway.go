@@ -9,19 +9,19 @@ import (
 	"time"
 )
 
-type SampleBus struct {
+type DefaultBus struct {
 	clients   registry.Registry
 	transport bus_transport.Transport
 }
 
-func NewSampleBus(clients registry.Registry) EventBus {
-	bus := &SampleBus{clients: clients}
+func NewBus(clients registry.Registry) EventBus {
+	bus := &DefaultBus{clients: clients}
 	transport := bus_transport.NewRMQTransport()
 	bus.subscribe(transport)
 	return bus
 }
 
-func (s *SampleBus) ConnectClient(connection *registry.Connection) {
+func (s *DefaultBus) ConnectClient(connection *registry.Connection) {
 	if s.clients.Add(connection) != nil {
 		log.Printf("It's not allowed to have several connection from 1 client `%s`", connection.ConnectionId)
 		connection.WebSocket.Close()
@@ -30,12 +30,12 @@ func (s *SampleBus) ConnectClient(connection *registry.Connection) {
 	go s.handleClientConnection(connection)
 }
 
-func (s *SampleBus) proxyClientMessage(from string, payload []byte) error {
+func (s *DefaultBus) proxyClientMessage(from string, payload []byte) error {
 	msg := protocol.NewMessage(from, "*", payload)
 	return s.transport.SendMessage(msg)
 }
 
-func (s *SampleBus) handleClientConnection(connection *registry.Connection) {
+func (s *DefaultBus) handleClientConnection(connection *registry.Connection) {
 	defer s.clients.Del(connection)
 	err := s.proxyClientMessage(
 		constants.AppInternalName,
@@ -63,7 +63,7 @@ func (s *SampleBus) handleClientConnection(connection *registry.Connection) {
 	}
 }
 
-func (s *SampleBus) subscribe(transport bus_transport.Transport) {
+func (s *DefaultBus) subscribe(transport bus_transport.Transport) {
 	s.transport = transport
 	err := s.transport.Init()
 	if err != nil {

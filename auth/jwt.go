@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-var appSecret = []byte(os.Getenv("APP_SECRET"))
+var appSecret = []byte(os.Getenv("MARGAY_AUTH_SECRET"))
 
 type JWTClient struct {
 	token  *jwt.Token

@@ -10,8 +10,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -v -o margay .
 
 FROM scratch
 
-ENV RMQ_DSN=amqp://user:bitnami@rabbitmq:5672/
-ENV APP_SECRET=SuperSecret
+ENV MARGAY_TRANSPORT_DSN=amqp://user:bitnami@rabbitmq:5672/
+ENV MARGAY_AUTH_SECRET=SuperSecret
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
