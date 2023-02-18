@@ -22,6 +22,7 @@ type RMQTransport struct {
 
 func (s *RMQTransport) Init() (err error) {
 	s.conn, err = amqp.Dial(s.getDSN())
+	log.Printf("Connected to RabbitMQ at %s", s.getDSN())
 	if err != nil {
 		return err
 	}

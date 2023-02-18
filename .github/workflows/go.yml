@@ -21,8 +21,19 @@ jobs:
       with:
         go-version: 1.19
 
-    - name: Build
-      run: go build -v -o margay
+    - name: Run tests
+      run:
+        - echo "Running tests with MARGAY_TRANSPORT_DSN=`$MARGAY_TRANSPORT_DSN`"
+        - make test
+      depends-on:
+        - rabbitmq
+      env:
+        RMQ_HOST: rabbitmq
+        RMQ_PORT: 5672
+        RMQ_USER: guest
+        RMQ_PASSWORD: guest
+        MARGAY_TRANSPORT_DSN: amqp://guest:guest@rabbitmq:5672/
 
-    - name: Test
-      run: go test -v ./...
+    - name: Build
+      run: make build
+
