@@ -9,31 +9,31 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
+env:
+  RMQ_HOST: rabbitmq
+  RMQ_PORT: 5672
+  RMQ_USER: guest
+  RMQ_PASSWORD: guest
+  MARGAY_TRANSPORT_DSN: amqp://guest:guest@rabbitmq:5672/
 
+jobs:
   build:
+    services:
+      rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+          - 5672:5672
+          - 15672:15672
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: 1.19
-
     - name: Run tests
       run:
-        - echo "Running tests with MARGAY_TRANSPORT_DSN=`$MARGAY_TRANSPORT_DSN`"
         - make test
-      depends-on:
-        - rabbitmq
-      env:
-        RMQ_HOST: rabbitmq
-        RMQ_PORT: 5672
-        RMQ_USER: guest
-        RMQ_PASSWORD: guest
-        MARGAY_TRANSPORT_DSN: amqp://guest:guest@rabbitmq:5672/
-
     - name: Build
       run: make build
 
