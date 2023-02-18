@@ -25,7 +25,7 @@ func main() {
 		log.Fatalf("can't start Service on 0.0.0.0:%s - %s", constants.DefaultPort, err)
 	}
 	ConnectionPool := registry.GetConnectionRegistry()
-	EventBus := backplane.NewSampleBus(ConnectionPool)
+	EventBus := backplane.NewBus(ConnectionPool)
 
 	for {
 		var connection *registry.Connection

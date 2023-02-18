@@ -14,7 +14,7 @@ type DefaultBus struct {
 	transport bus_transport.Transport
 }
 
-func NewSampleBus(clients registry.Registry) EventBus {
+func NewBus(clients registry.Registry) EventBus {
 	bus := &DefaultBus{clients: clients}
 	transport := bus_transport.NewRMQTransport()
 	bus.subscribe(transport)
