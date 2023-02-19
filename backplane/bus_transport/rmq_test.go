@@ -2,7 +2,11 @@ package bus_transport
 
 import (
 	"MargayGateway/protocol"
+	"context"
+	amqp "github.com/rabbitmq/amqp091-go"
+	"os"
 	"testing"
+	"time"
 )
 
 // Note that in order for these tests to run successfully,
@@ -58,15 +62,38 @@ func TestRMQTransport_GetMessage(t *testing.T) {
 		},
 	}
 
-	err = transport.SendMessage(msg)
-	if err != nil {
-		t.Fatalf("error sending message: %v", err)
-	}
+	publishTestMessage(t, msg)
 
 	receivedMsg := transport.GetMessage()
 	if receivedMsg == nil {
 		t.Fatalf("expected to receive message, but got nil")
 	}
+}
+
+func publishTestMessage(t *testing.T, msg *protocol.Message) {
+	con, err := amqp.Dial(os.Getenv("MARGAY_TRANSPORT_DSN"))
+	if err != nil {
+		t.Fatalf("error connecting to RabbitMQ: %v", err)
+	}
+	ch, err := con.Channel()
+	if err != nil {
+		t.Fatalf("error creating channel: %v", err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_ = ch.PublishWithContext(
+		ctx,
+		inboxQueueName,
+		"",
+		false, // mandatory
+		false, // immediate
+		amqp.Publishing{
+			Body: msg.Payload,
+			Headers: map[string]interface{}{
+				"recipient": msg.Metadata.Recipient,
+				"sender":    msg.Metadata.Sender,
+			},
+		})
 }
 
 func TestRMQTransport_AckMessage(t *testing.T) {
@@ -90,10 +117,7 @@ func TestRMQTransport_AckMessage(t *testing.T) {
 		},
 	}
 
-	err = transport.SendMessage(msg)
-	if err != nil {
-		t.Fatalf("error sending message: %v", err)
-	}
+	publishTestMessage(t, msg)
 
 	receivedMsg := transport.GetMessage()
 	if receivedMsg == nil {

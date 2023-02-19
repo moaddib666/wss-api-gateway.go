@@ -33,6 +33,10 @@ func (s SampleTransport) SendMessage(message *protocol.Message) error {
 	return nil
 }
 
+func (s SampleTransport) String() string {
+	return "SampleTransport"
+}
+
 func NewSampleTransport() Transport {
 	return &SampleTransport{}
 }

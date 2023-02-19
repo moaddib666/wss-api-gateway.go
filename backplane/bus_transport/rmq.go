@@ -3,9 +3,11 @@ package bus_transport
 import (
 	"MargayGateway/protocol"
 	"context"
+	"errors"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 	"os"
+	"reflect"
 	"time"
 )
 
@@ -18,6 +20,10 @@ type RMQTransport struct {
 	inbox   amqp.Queue
 	msgChan chan *protocol.Message
 	ackChan chan bool
+}
+
+func (s *RMQTransport) String() string {
+	return reflect.TypeOf(s).Name()
 }
 
 func (s *RMQTransport) Init() (err error) {
@@ -103,7 +109,20 @@ func (s *RMQTransport) getDSN() string {
 	}
 	return dsn
 }
+
+// function  that check thac connection not closed
+func (s *RMQTransport) checkConnection() (err error) {
+	if s.conn.IsClosed() {
+		err = errors.New("connection to RabbitMQ is closed")
+	}
+	return err
+}
 func (s *RMQTransport) reader() error {
+	time.Sleep(1 * time.Second) // wait for connection to be established
+	err := s.checkConnection()
+	if err != nil {
+		return err
+	}
 	ch, err := s.conn.Channel()
 	if err != nil {
 		log.Printf("Can't open stable channel to rmq %v", err)
@@ -146,6 +165,7 @@ func (s *RMQTransport) reader() error {
 }
 
 func (s *RMQTransport) Destruct() error {
+	log.Printf("Closing connection to RabbitMQ")
 	return s.conn.Close()
 }
 
@@ -160,11 +180,15 @@ func (s *RMQTransport) AckMessage(message *protocol.Message) {
 }
 
 func (s *RMQTransport) SendMessage(message *protocol.Message) error {
+	err := s.checkConnection()
+	if err != nil {
+		return err
+	}
 	outbox, err := s.conn.Channel()
 	if err != nil {
 		return err
 	}
-	log.Printf("Sending message `%s` to event bus - %+v", message.Payload, message.Metadata)
+	log.Printf("%s Sending message `%s` to event bus - %+v", s, message.Payload, message.Metadata)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second) // TODO make global context
 	defer cancel()
 	err = outbox.PublishWithContext(

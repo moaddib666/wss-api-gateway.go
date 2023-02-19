@@ -8,4 +8,5 @@ type Transport interface {
 	SendMessage(message *protocol.Message) error
 	Destruct() error
 	AckMessage(message *protocol.Message)
+	String() string
 }

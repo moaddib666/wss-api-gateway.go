@@ -14,11 +14,11 @@ clean:
 # Test targets
 .PHONY: test
 test:
-	@go test -v ./...
+	@go test -v ./... -timeout 5s
 
 .PHONY: test-coverage
 test-coverage:
-	@go test -coverprofile=coverage.out ./...
+	@go test -coverprofile=coverage.out ./... -timeout 300ms
 	@go tool cover -html=coverage.out
 
 # Other targets
